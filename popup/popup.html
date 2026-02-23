@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Block Settings</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>AI Block</h1>
+      <div class="master-toggle">
+        <label class="switch">
+          <input type="checkbox" id="masterToggle" checked>
+          <span class="slider"></span>
+        </label>
+        <span id="statusText">Enabled</span>
+      </div>
+    </header>
+
+    <div class="stats">
+      <p>Elements blocked on this page: <strong id="blockedCount">0</strong></p>
+    </div>
+
+    <section class="domains-section">
+      <h2>Domain Settings</h2>
+      <div id="domainsList" class="domains-list">
+        <!-- Domain items will be dynamically inserted here -->
+      </div>
+    </section>
+
+    <footer>
+      <button id="saveButton" class="btn-primary">Save Settings</button>
+      <p class="footer-text">Configure which domains to block</p>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
