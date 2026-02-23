@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Block - Test Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    h1 {
+      color: #333;
+    }
+    .test-section {
+      background: white;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .ad-container {
+      background: #ffe4e1;
+      border: 2px solid #ff6b6b;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 4px;
+    }
+    .sponsored {
+      background: #fff3cd;
+      border: 2px solid #ffc107;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 4px;
+    }
+    .normal-content {
+      background: #e7f5ff;
+      border: 2px solid #4dabf7;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 4px;
+    }
+    code {
+      background: #f1f3f5;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>AI Block - Extension Test Page</h1>
+  
+  <div class="test-section">
+    <h2>Instructions</h2>
+    <ol>
+      <li>Install the AI Block extension in Chrome (see README.md)</li>
+      <li>Open this test page in Chrome</li>
+      <li>Click the extension icon to open settings</li>
+      <li>Enable/disable blocking and see the results</li>
+      <li>Elements with red borders (ads) should be hidden when blocking is enabled</li>
+    </ol>
+  </div>
+
+  <div class="test-section">
+    <h2>Test Elements</h2>
+    <p>This page contains test elements that simulate ads and sponsored content.</p>
+
+    <div class="normal-content">
+      <h3>Normal Content</h3>
+      <p>This is regular content that should always be visible.</p>
+    </div>
+
+    <div class="ad-container" data-ad-details="test-ad-1">
+      <h3>🚫 Ad Container (data-ad-details)</h3>
+      <p>This element has <code>data-ad-details</code> attribute and should be blocked.</p>
+    </div>
+
+    <div class="normal-content">
+      <h3>More Normal Content</h3>
+      <p>This is more regular content that should always be visible.</p>
+    </div>
+
+    <div class="sponsored" data-promoted="true">
+      <h3>🚫 Promoted Content (data-promoted)</h3>
+      <p>This element has <code>data-promoted="true"</code> and should be blocked.</p>
+    </div>
+
+    <div class="normal-content">
+      <h3>Final Normal Content</h3>
+      <p>This is the last piece of regular content.</p>
+    </div>
+  </div>
+
+  <div class="test-section">
+    <h2>How It Works</h2>
+    <ul>
+      <li><strong>Content Script:</strong> Runs on every page and applies blocking rules</li>
+      <li><strong>CSS Selectors:</strong> Uses domain-specific selectors to find elements</li>
+      <li><strong>Dynamic Blocking:</strong> MutationObserver watches for new elements</li>
+      <li><strong>Storage:</strong> Settings persist across browser sessions</li>
+    </ul>
+  </div>
+
+  <div class="test-section">
+    <h2>Default Supported Sites</h2>
+    <ul>
+      <li><strong>Amazon:</strong> Sponsored products and ads</li>
+      <li><strong>Google:</strong> Search ads and sponsored results</li>
+      <li><strong>YouTube:</strong> Display ads and promoted content</li>
+      <li><strong>Facebook:</strong> Sponsored posts</li>
+      <li><strong>Twitter/X:</strong> Promoted tweets</li>
+      <li><strong>Reddit:</strong> Promoted posts</li>
+    </ul>
+  </div>
+
+  <script>
+    // Add some dynamic content to test MutationObserver
+    setTimeout(() => {
+      const section = document.querySelector('.test-section:last-of-type');
+      const dynamicAd = document.createElement('div');
+      dynamicAd.className = 'ad-container';
+      dynamicAd.setAttribute('data-ad-details', 'dynamic-ad');
+      dynamicAd.innerHTML = `
+        <h3>🚫 Dynamically Added Ad</h3>
+        <p>This ad was added 2 seconds after page load to test dynamic blocking.</p>
+      `;
+      section.appendChild(dynamicAd);
+    }, 2000);
+  </script>
+</body>
+</html>
