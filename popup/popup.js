@@ -102,13 +102,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       // Notify all content scripts about the update
       const tabs = await chrome.tabs.query({});
       tabs.forEach(tab => {
-        chrome.tabs.sendMessage(tab.id, {
-          action: 'updateSettings',
-          domainMappings: domainMappings,
-          isEnabled: isEnabled
-        }).catch(() => {
-          // Ignore errors for tabs where content script isn't loaded
-        });
+        if (tab.url && !tab.url.startsWith('chrome://')) {
+          chrome.tabs.sendMessage(tab.id, {
+            action: 'updateSettings',
+            domainMappings: domainMappings,
+            isEnabled: isEnabled
+          }).catch((error) => {
+            // Content script not loaded on this tab
+            console.debug(`Could not update tab ${tab.id}:`, error.message);
+          });
+        }
       });
 
       // Visual feedback
@@ -131,15 +134,20 @@ document.addEventListener('DOMContentLoaded', async () => {
   async function updateBlockedCount() {
     try {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-      if (tab && tab.id) {
+      if (tab && tab.id && tab.url && !tab.url.startsWith('chrome://')) {
         chrome.tabs.sendMessage(tab.id, { action: 'getBlockedCount' }, (response) => {
+          if (chrome.runtime.lastError) {
+            // Content script not loaded on this page
+            console.debug('Content script not available:', chrome.runtime.lastError.message);
+            return;
+          }
           if (response && response.blockedCount !== undefined) {
             blockedCountElement.textContent = response.blockedCount;
           }
         });
       }
     } catch (error) {
-      // Silently fail if we can't get the count
+      console.debug('Cannot get blocked count:', error.message);
     }
   }
 

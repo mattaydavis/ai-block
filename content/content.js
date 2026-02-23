@@ -7,6 +7,7 @@
   let domainMappings = {};
   let isEnabled = true;
   let blockedCount = 0;
+  let debounceTimeout = null;
 
   // Get the current domain
   function getCurrentDomain() {
@@ -25,6 +26,16 @@
     return null;
   }
 
+  // Inject blocking CSS on first run
+  function injectBlockingStyles() {
+    if (document.getElementById('ai-block-styles')) return;
+    
+    const style = document.createElement('style');
+    style.id = 'ai-block-styles';
+    style.textContent = '[data-ai-blocked] { display: none !important; }';
+    document.head.appendChild(style);
+  }
+
   // Hide elements matching the selectors
   function blockElements(selectors) {
     if (!selectors || selectors.length === 0) return;
@@ -34,7 +45,6 @@
         const elements = document.querySelectorAll(selector);
         elements.forEach(element => {
           if (!element.hasAttribute('data-ai-blocked')) {
-            element.style.display = 'none';
             element.setAttribute('data-ai-blocked', 'true');
             blockedCount++;
           }
@@ -74,12 +84,21 @@
         isEnabled = result.isEnabled;
       }
 
+      // Inject CSS for blocking
+      injectBlockingStyles();
+
       // Apply initial blocking
       applyBlockingRules();
 
       // Set up mutation observer to block dynamically added elements
+      // Debounce to avoid excessive blocking calls on rapid DOM changes
       const observer = new MutationObserver((mutations) => {
-        applyBlockingRules();
+        if (debounceTimeout) {
+          clearTimeout(debounceTimeout);
+        }
+        debounceTimeout = setTimeout(() => {
+          applyBlockingRules();
+        }, 100); // Wait 100ms after last mutation
       });
 
       observer.observe(document.body, {
